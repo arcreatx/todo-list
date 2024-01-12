@@ -20,10 +20,27 @@ function App() {
         title: newTask,
         status: 0
       }
-      setTasks([...tasks, task])
+      setTasks([...tasks, task]);
+      setNewTask("")
     }
   }
 
+  const handleInputChange = (e) => {
+    setNewTask(e.target.value);
+  }
+
+  const setTaskStatus = (taskId, status) => {
+    setTasks(tasks.map(task => {
+      if (task.id === taskId) {
+        return {...task, status: status ? 1 : 0}
+      }
+      return task;
+    }))
+  }
+
+  const removeTask = (taskId) => {
+    setTasks(tasks.filter((task) => task.id !== taskId))
+  }
 
   return (
     <div className="container">
@@ -35,19 +52,19 @@ function App() {
       <li key={task.id} className={task.status ? "done" : ""}>
       <span className="label">{task.title}</span>
       <div className="action">
-        <input type="checkbox" className="btn-action btn-action-done"/>
-        <button className="btn-action btn-action-delete">✖</button>
+        <input type="checkbox" className="btn-action btn-action-done" checked={Boolean(task.status)} onChange={(e) => setTaskStatus(task.id, e.target.checked)}/>
+        <button className="btn-action btn-action-delete" onClick= {() => removeTask(task.id)}>✖</button>
       </div>
     </li>
     ))}
   </ul>
   <div className="filter-wrapper">
     <label htmlFor="filter" className="filter-label">Show incompleted tasks only</label>
-    <input type="checkbox" id="filter" checked={showIncomplete}/>
+    <input type="checkbox" id="filter" checked={showIncomplete} onChange={(e) => setShowIncomplete(e.target.checked)}/>
   </div>
   <form onSubmit={handleSubmit} className="form">
     <label htmlFor="newitem">Add to the todo list</label>
-    <input type="text" id="newitem" value={newTask} />
+    <input type="text" id="newitem" value={newTask} onChange={handleInputChange}/>
     <button type="submit">Add Item</button>
   </form>
     </div>
